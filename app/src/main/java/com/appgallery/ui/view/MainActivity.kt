@@ -20,14 +20,10 @@ import com.appgallery.ui.adapter.AdapterGallery
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-
-    private lateinit var externalStoragePhotoAdapter: AdapterGallery
-    private var imageList = ArrayList<ImageModel>()
+       private lateinit var externalStoragePhotoAdapter: AdapterGallery
     private var readPermissionGranted = false
     private var writePermissionGranted = false
     private lateinit var permissionsLauncher: ActivityResultLauncher<Array<String>>
-
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,22 +33,26 @@ class MainActivity : AppCompatActivity() {
         permissionsLauncher =
             registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
                 readPermissionGranted =
-                    permissions[Manifest.permission.READ_EXTERNAL_STORAGE] ?: readPermissionGranted
+                    permissions[Manifest.permission.READ_EXTERNAL_STORAGE] ?:readPermissionGranted
+                writePermissionGranted =
+                    permissions[Manifest.permission.WRITE_EXTERNAL_STORAGE] ?: writePermissionGranted
 
-                if (readPermissionGranted) {
+            if (readPermissionGranted) {
                     setupExternalStorageRecyclerView()
                     Toast.makeText(this, "read files without permission.", Toast.LENGTH_LONG).show()
                 } else {
                     Toast.makeText(this, "Can't read files without permission.", Toast.LENGTH_LONG)
                         .show()
                 }
+
             }
         setupExternalStorageRecyclerView()
         updateOrRequestPermissions()
+
     }
 
     private fun updateOrRequestPermissions() {
-        val hasReadPermission = ContextCompat.checkSelfPermission(
+        val hasReadPermission: Boolean = ContextCompat.checkSelfPermission(
             this,
             Manifest.permission.READ_EXTERNAL_STORAGE
         ) == PackageManager.PERMISSION_GRANTED
@@ -88,14 +88,9 @@ class MainActivity : AppCompatActivity() {
             MediaStore.Images.Media.WIDTH,
             MediaStore.Images.Media.HEIGHT,
         )
+
         val photos = mutableListOf<ImageModel>()
-        contentResolver.query(
-            collection,
-            projection,
-            null,
-            null,
-            "${MediaStore.Images.Media.DISPLAY_NAME} ASC"
-        )?.use { cursor ->
+        contentResolver.query(collection,projection,null,null,"${MediaStore.Images.Media.DISPLAY_NAME} ASC")?.use { cursor ->
             val idColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID)
             val displayNameColumn =
                 cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME)
@@ -123,8 +118,7 @@ class MainActivity : AppCompatActivity() {
         val photos = loadPhotosFromExternalStorage()
         externalStoragePhotoAdapter = AdapterGallery(photos)
         binding.rvPublicPhotos.adapter = externalStoragePhotoAdapter
-        // adapter = externalStoragePhotoAdapter
-        layoutManager = StaggeredGridLayoutManager(3, RecyclerView.VERTICAL)
+       layoutManager = StaggeredGridLayoutManager(3, RecyclerView.VERTICAL)
     }
 
 }

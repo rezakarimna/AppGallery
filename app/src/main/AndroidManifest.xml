@@ -19,7 +19,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppGallery">
         <activity
-            android:name=".ui.view.permissionActivity"
+            android:name=".ui.view.PermissionActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.view.permissionActivity">
+    tools:context=".ui.view.PermissionActivity">
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvPublicPhotos"
         android:layout_width="match_parent"
